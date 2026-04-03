@@ -29,6 +29,7 @@ E aplica automaticamente:
 
 ##  Arquitetura (fluxo)
 
+<pre>
 Guard.validate(text)
     ↓
 Scanner.scan(text)
@@ -44,6 +45,7 @@ Masker (masked_text)
 AuditLogger (audit_record)
     ↓
 Resultado final
+</pre>
 
 # 📦 Estrutura do projeto
 
