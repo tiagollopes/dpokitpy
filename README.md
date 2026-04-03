@@ -49,6 +49,7 @@ Resultado final
 
 dpokitpy/
 
+<pre>
 ├── test.py
 └── dpokitpy/
     ├── guard.py
@@ -65,6 +66,7 @@ dpokitpy/
     └── policies/
         └── br/
             └── lgpd.py
+</pre>
 
 # ⚙️ Como usar
 <pre>from dpokitpy import Guard
