@@ -50,38 +50,23 @@ Resultado final
 dpokitpy/
 
 ├── test.py
-
 └── dpokitpy/
-
     ├── guard.py
-
     ├── scanner.py
-
     ├── models.py
-
     ├── masker.py
-
     ├── audit_logger.py
-
     ├── validators/
-
     │   └── br/
-
     │       ├── cpf.py
-
     │       ├── cnpj.py
-
     │       ├── email.py
-
     │       └── phone.py
-
     └── policies/
-
         └── br/
-
             └── lgpd.py
 
-#⚙️ Como usar
+# ⚙️ Como usar
 <pre>from dpokitpy import Guard
 
 guard = Guard()
@@ -123,12 +108,13 @@ print(guard.validate(text))
 
 # 📊 Regras atuais
 
-* ** Detecção
+* **Detecção
 - Tipo	Regra
 - CPF	exige CPF:
 - CNPJ	exige CNPJ:
 - PHONE	exige Telefone:
 - EMAIL	padrão livre
+
 * **Risco
 
 - CPF válido → high
