@@ -127,31 +127,31 @@ dpokitpy/
 </pre>
 
 # Componentes principais
-* **Guard
+- Guard
 
 Interface principal da biblioteca. Expõe os métodos públicos para consumo.
 
-* **Scanner
+- Scanner
 
 Responsável por detectar padrões e acionar validadores.
 
-* **Validators
+- Validators
 
 Módulos específicos para validação por tipo de dado.
 
-* **Masker
+- Masker
 
 Responsável por mascarar os dados sensíveis encontrados.
 
-* **AuditLogger
+- AuditLogger
 
 Gera informações de auditoria, incluindo hash do texto original e mascarado.
 
-* **Policies
+- Policies
 
 Centraliza regras de risco e ação recomendada.
 
-* **API principal
+- API principal
 
 Uso típico:
 
@@ -183,25 +183,25 @@ guard.is_safe(text)
 </pre>
 
 - Retorna True se nenhum dado sensível relevante for encontrado.
-
+<pre>
 guard.find(text)
-
+</pre>
 - Retorna a lista de ocorrências detectadas.
-
+<pre>
 guard.validate(text)
-
+</pre>
 - Retorna o resultado completo da análise com issues, texto mascarado e auditoria.
-
+<pre>
 guard.mask(text)
-
+</pre>
 - Retorna o texto já mascarado.
-
+<pre>
 guard.hash_original(text)
-
+</pre>
 - Retorna o hash SHA-256 do texto original.
-
+<pre>
 guard.hash_masked(text)
-
+</pre>
 - Retorna o hash SHA-256 do texto mascarado.
 
 <pre>
@@ -295,7 +295,7 @@ bm_rg_outros.py
 
 # Runner consolidado
 
-O arquivo runner.py executa todos os benchmarks e consolida os resultados.
+O arquivo `runner.py` executa todos os benchmarks e consolida os resultados.
 
 # Resultado atual
 
