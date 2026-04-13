@@ -1,0 +1,40 @@
+```gitignore
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtualenv
+venv/
+.venv/
+env/
+
+# Build / packaging
+build/
+dist/
+*.egg-info/
+
+# Test / cache
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# IDE / editor
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Benchmark outputs temporários
+benchmark/*.json
+benchmark/*.txt
+
+# Arquivos locais diversos
+*.sqlite3

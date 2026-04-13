@@ -3,6 +3,9 @@ from dpokitpy.validators.br.cpf import find_cpfs, is_valid_cpf
 from dpokitpy.validators.br.cnpj import find_cnpjs, is_valid_cnpj
 from dpokitpy.validators.br.email import find_emails, is_valid_email
 from dpokitpy.validators.br.phone import find_phones, is_valid_phone
+from dpokitpy.validators.br.pis import find_pis, is_valid_pis
+from dpokitpy.validators.br.cnh import find_cnhs, is_valid_cnh
+from dpokitpy.validators.br.rg import find_rgs, is_valid_rg
 from dpokitpy.policies.br.lgpd import LGPDPolicyBR
 
 
@@ -60,6 +63,9 @@ class Scanner:
             cnpj_matches = find_cnpjs(text)
             email_matches = find_emails(text)
             phone_matches = find_phones(text)
+            pis_matches = find_pis(text)
+            cnh_matches = find_cnhs(text)
+            rg_matches = find_rgs(text)
 
             issues.extend(
                 self._build_issues(
@@ -109,4 +115,39 @@ class Scanner:
                 )
             )
 
+            issues.extend(
+                self._build_issues(
+                    issue_type="PIS",
+                    matches=pis_matches,
+                    validator=is_valid_pis,
+                    valid_risk="high",
+                    valid_reason="PIS válido encontrado no texto.",
+                    invalid_risk="medium",
+                    invalid_reason="PIS inválido."
+                )
+            )
+
+            issues.extend(
+                self._build_issues(
+                    issue_type="CNH",
+                    matches=cnh_matches,
+                    validator=is_valid_cnh,
+                    valid_risk="high",
+                    valid_reason="CNH válida encontrada no texto.",
+                    invalid_risk="medium",
+                    invalid_reason="CNH inválida."
+                )
+            )
+
+            issues.extend(
+                self._build_issues(
+                    issue_type="RG",
+                    matches=rg_matches,
+                    validator=is_valid_rg,
+                    valid_risk="medium",
+                    valid_reason="RG encontrado no texto.",
+                    invalid_risk="low",
+                    invalid_reason="RG inválido."
+                )
+            )
         return ScanResult(issues)

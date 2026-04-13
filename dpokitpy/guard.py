@@ -44,4 +44,14 @@ class Guard:
             if issue.risk.lower() == risk
         ]
 
+    def hash_original(self, text: str) -> str:
+        """Retorna o SHA-256 do texto bruto enviado."""
+        result = self.validate(text)
+        return result.audit_record.get("original_text_hash")
+
+    def hash_masked(self, text: str) -> str:
+        """Retorna o SHA-256 do texto após a aplicação das máscaras."""
+        result = self.validate(text)
+        return result.audit_record.get("masked_text_hash")
+
         return len(filtered_issues) == 0
