@@ -21,9 +21,13 @@ class Guard:
         )
         return result
 
+    #def find(self, text: str):
+    #    result = self.validate(text)
+    #    return result.issues
+
     def find(self, text: str):
         result = self.validate(text)
-        return result.issues
+        return [issue.to_dict() for issue in result.issues]
 
     def mask(self, text: str):
         result = self.validate(text)

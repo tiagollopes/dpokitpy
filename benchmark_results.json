@@ -1,0 +1,109 @@
+{
+    "total_tests": 11,
+    "total_samples": 31000,
+    "total_errors": 0,
+    "total_found_issues": 7651,
+    "total_time_sec": 8.046,
+    "global_precision": "100.0%",
+    "results": [
+        {
+            "type": "CPF",
+            "iterations": 5000,
+            "total_time_sec": 1.0887,
+            "avg_time_ms": 0.217739,
+            "found_issues": 0,
+            "errors_count": 0,
+            "precision": "100.0%"
+        },
+        {
+            "type": "CNPJ",
+            "iterations": 5000,
+            "total_time_sec": 0.9875,
+            "avg_time_ms": 0.197502,
+            "found_issues": 0,
+            "errors_count": 0,
+            "precision": "100.0%"
+        },
+        {
+            "type": "EMAIL",
+            "iterations": 5000,
+            "total_time_sec": 0.8719,
+            "avg_time_ms": 0.174372,
+            "found_issues": 0,
+            "errors_count": 0,
+            "precision": "100.0%"
+        },
+        {
+            "type": "PHONE",
+            "iterations": 2000,
+            "total_time_sec": 0.4021,
+            "avg_time_ms": 0.201031,
+            "found_issues": 0,
+            "errors_count": 0,
+            "precision": "100.0%"
+        },
+        {
+            "type": "PIS",
+            "iterations": 2000,
+            "total_time_sec": 0.4307,
+            "avg_time_ms": 0.215369,
+            "found_issues": 969,
+            "errors_count": 0,
+            "precision": "100.0%"
+        },
+        {
+            "type": "CNH",
+            "iterations": 2000,
+            "total_time_sec": 0.4698,
+            "avg_time_ms": 0.2349,
+            "found_issues": 675,
+            "errors_count": 0,
+            "precision": "100.0%"
+        },
+        {
+            "type": "RG_RJ",
+            "iterations": 2000,
+            "total_time_sec": 0.6242,
+            "avg_time_ms": 0.312094,
+            "found_issues": 1243,
+            "errors_count": 0,
+            "precision": "100.0%"
+        },
+        {
+            "type": "RG_ES",
+            "iterations": 2000,
+            "total_time_sec": 0.6089,
+            "avg_time_ms": 0.304461,
+            "found_issues": 1249,
+            "errors_count": 0,
+            "precision": "100.0%"
+        },
+        {
+            "type": "RG_MG",
+            "iterations": 2000,
+            "total_time_sec": 0.6048,
+            "avg_time_ms": 0.302422,
+            "found_issues": 1226,
+            "errors_count": 0,
+            "precision": "100.0%"
+        },
+        {
+            "type": "RG_SP",
+            "iterations": 2000,
+            "total_time_sec": 0.4748,
+            "avg_time_ms": 0.237417,
+            "found_issues": 1283,
+            "errors_count": 0,
+            "precision": "100.0%"
+        },
+        {
+            "type": "RG_OUTROS",
+            "iterations": 2000,
+            "total_time_sec": 0.5965,
+            "avg_time_ms": 0.298272,
+            "found_issues": 1006,
+            "errors_count": 0,
+            "precision": "100.0%"
+        }
+    ]
+}
