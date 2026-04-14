@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dpokitpy"
+version = "0.1.0"
+description = "Python library for detection, validation, masking and auditing of sensitive data (PII), focused on Brazilian rules and LGPD scenarios."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [
+  { name = "Tiago Lopes" }
+]
+keywords = [
+  "pii",
+  "lgpd",
+  "privacy",
+  "compliance",
+  "security",
+  "masking",
+  "audit",
+  "cpf",
+  "cnpj",
+  "rg"
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Information Technology",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Operating System :: OS Independent",
+  "Topic :: Security",
+  "Topic :: Software Development :: Libraries :: Python Modules"
+]
+
+[project.urls]
+Homepage = "https://github.com/tiagollopes/dpokitpy"
+Repository = "https://github.com/tiagollopes/dpokitpy"
+Issues = "https://github.com/tiagollopes/dpokitpy/issues"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["dpokitpy*"]
+exclude = ["benchmark*", "tests*"]

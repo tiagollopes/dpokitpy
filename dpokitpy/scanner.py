@@ -150,4 +150,38 @@ class Scanner:
                     invalid_reason="RG inválido."
                 )
             )
+
+        # 👇 AQUI entra a prioridade (fora do if)
+        issues = self._apply_priority(issues)
+
+        return ScanResult(issues)
+
+    def _apply_priority(self, issues: list[ScanIssue]) -> list[ScanIssue]:
+        priority = {
+            "CPF": 1,
+            "CNPJ": 1,
+            "PIS": 1,
+            "CNH": 1,
+            "RG": 2,
+            "EMAIL": 3,
+            "PHONE": 4
+        }
+
+        best_by_value = {}
+
+        for issue in issues:
+            value = issue.value
+
+            if value not in best_by_value:
+                best_by_value[value] = issue
+                continue
+
+            current = best_by_value[value]
+
+            if priority.get(issue.type, 99) < priority.get(current.type, 99):
+                best_by_value[value] = issue
+
+        return list(best_by_value.values())
+
+        issues = self._apply_priority(issues)
         return ScanResult(issues)

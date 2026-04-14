@@ -32,9 +32,11 @@ Thumbs.db
 # Logs
 *.log
 
-# Benchmark outputs temporários
-benchmark/*.json
+# Benchmark logs
+benchmark/erros_*.txt
 benchmark/*.txt
+benchmark_results.json
 
 # Arquivos locais diversos
 *.sqlite3
+
