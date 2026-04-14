@@ -356,7 +356,11 @@ ES
 MG
 SP
 OUTROS
-Instalação local
+</pre>
+
+# Instalação local
+
+<pre>
 git clone https://github.com/tiagollopes/dpokitpy.git
 cd dpokitpy
 python3 -m venv venv
