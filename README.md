@@ -1,9 +1,9 @@
 # dpokitpy
 
-Biblioteca Python para **detecção, validação, mascaramento e auditoria de dados sensíveis (PII)**, com foco inicial em **regras brasileiras** e aderência a cenários de **LGPD, segurança e compliance**.
+Biblioteca Python para **detecção, validação, mascaramento e auditoria de dados sensíveis (PII)**, com foco inicial em **regras brasileiras** e aderência a cenários de **LGPD, segurança, compliance e apoio a funções de DPO (Data Protection Officer)**.
 
 > Projeto experimental, porém já funcional, modular e validado por benchmarks automatizados.
-
+> 100% offline. Nenhum dado é enviado ou armazenado.
 
 
 ## Visão geral
@@ -21,8 +21,6 @@ Atualmente, a biblioteca já oferece um fluxo completo de:
 - auditoria
 - benchmark automatizado
 
-
-
 ## Objetivos do projeto
 
 O projeto foi pensado para cenários como:
@@ -35,7 +33,48 @@ O projeto foi pensado para cenários como:
 - apoio a pipelines de governança e compliance
 - futura integração com filtros de saída de IA / LLM
 
+## 🛡️ Privacidade e Segurança
 
+O `dpokitpy` foi projetado com foco em **privacidade e proteção de dados sensíveis**.
+
+### Garantias importantes
+
+- ❌ Não envia dados para APIs externas
+- ❌ Não realiza chamadas de rede
+- ❌ Não armazena textos analisados
+- ❌ Não persiste dados sensíveis em disco
+- ❌ Não gera logs com conteúdo original
+
+- ✅ Todo processamento ocorre localmente (offline)
+- ✅ Os dados são processados apenas em memória
+- ✅ Nenhuma informação sensível é retida após a execução
+
+### Auditoria segura
+
+A auditoria gerada pelo sistema **não expõe o conteúdo original**.
+
+Em vez disso, utiliza:
+
+- Hash SHA-256 do texto original
+- Hash SHA-256 do texto mascarado
+
+Isso permite:
+
+- rastreabilidade
+- comparação de resultados
+- auditoria segura
+
+sem necessidade de armazenar dados sensíveis.
+
+### Importante
+
+O uso da biblioteca é seguro para:
+
+- análise de textos locais
+- sanitização de logs
+- validação de entrada de dados
+
+desde que o próprio ambiente de execução também siga boas práticas de segurança.
 
 ## Tipos suportados
 
@@ -48,8 +87,6 @@ Atualmente o `dpokitpy` suporta:
 - PIS
 - CNH
 - RG
-
-
 
 ## RG com validação avançada
 
@@ -71,8 +108,6 @@ O RG foi implementado com arquitetura separada por estado para reduzir conflitos
 - evita colisão entre formatos diferentes
 - SP possui validação de dígito verificador
 - formatos mascarados e pontuados são tratados corretamente
-
-
 
 ## Fluxo principal
 
