@@ -151,37 +151,103 @@ class Scanner:
                 )
             )
 
-        # 👇 AQUI entra a prioridade (fora do if)
-        issues = self._apply_priority(issues)
+        # AQUI prioridade (fora do if)
+        issues = self._apply_priority(issues, text)
 
         return ScanResult(issues)
 
-    def _apply_priority(self, issues: list[ScanIssue]) -> list[ScanIssue]:
-        priority = {
-            "CPF": 1,
-            "CNPJ": 1,
-            "PIS": 1,
-            "CNH": 1,
-            "RG": 2,
-            "EMAIL": 3,
-            "PHONE": 4
-        }
+    def _apply_priority(self, issues: list[ScanIssue], text: str) -> list[ScanIssue]:
+        import re
 
-        best_by_value = {}
+        def normalize(value: str) -> str:
+            return re.sub(r"\D", "", value or "")
+
+        def has_label_near(value: str, label_words: tuple[str, ...], window: int = 20) -> bool:
+            raw = value or ""
+            digits = normalize(value)
+
+            for candidate in (raw, digits):
+                if not candidate:
+                    continue
+
+                start = 0
+                while True:
+                    idx = text.find(candidate, start)
+                    if idx == -1:
+                        break
+
+                    left = text[max(0, idx - window):idx].lower()
+                    if any(word in left for word in label_words):
+                        return True
+
+                    start = idx + 1
+
+            return False
+
+        grouped = {}
 
         for issue in issues:
-            value = issue.value
+            key = normalize(issue.value)
+            grouped.setdefault(key, []).append(issue)
 
-            if value not in best_by_value:
-                best_by_value[value] = issue
+        final = []
+
+        for _, group in grouped.items():
+            valids = [x for x in group if x.valid]
+            invalids = [x for x in group if not x.valid]
+
+            if not valids:
+                final.extend(invalids)
                 continue
 
-            current = best_by_value[value]
+            cpf = [x for x in valids if x.type == "CPF"]
+            pis = [x for x in valids if x.type == "PIS"]
+            cnh = [x for x in valids if x.type == "CNH"]
+            phone = [x for x in valids if x.type == "PHONE"]
+            others = [x for x in valids if x.type not in ("CPF", "PIS", "CNH", "PHONE")]
 
-            if priority.get(issue.type, 99) < priority.get(current.type, 99):
-                best_by_value[value] = issue
+            # contexto explícito manda
+            if phone and has_label_near(group[0].value, ("ligar para", "telefone", "tel", "cel", "celular", "fone")):
+                final.extend(phone)
+                final.extend(others)
+                continue
 
-        return list(best_by_value.values())
+            if cpf and has_label_near(group[0].value, ("cpf",)):
+                final.extend(cpf)
+                final.extend(others)
+                continue
 
-        issues = self._apply_priority(issues)
-        return ScanResult(issues)
+            if pis and has_label_near(group[0].value, ("pis", "pasep", "nis", "número ", "numero ")):
+                final.extend(pis)
+                final.extend(others)
+                continue
+
+            if cnh and has_label_near(group[0].value, ("cnh", "habilitação", "habilitacao")):
+                final.extend(cnh)
+                final.extend(others)
+                continue
+
+            # sem contexto: CPF > PIS > CNH
+            if cpf:
+                final.extend(cpf)
+                final.extend(others)
+                continue
+
+            if pis:
+                final.extend(pis)
+                final.extend(others)
+                continue
+
+            if cnh:
+                final.extend(cnh)
+                final.extend(others)
+                continue
+
+            # documento vence telefone
+            if others and phone:
+                final.extend(others)
+                continue
+
+            final.extend(valids)
+
+        return final
