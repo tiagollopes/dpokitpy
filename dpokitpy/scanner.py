@@ -18,6 +18,15 @@ class Scanner:
         else:
             self.policy = None
 
+class Scanner:
+    def __init__(self, country: str = "BR"):
+        self.country = country.upper()
+
+        if self.country == "BR":
+            self.policy = LGPDPolicyBR()
+        else:
+            self.policy = None
+
     def _build_issues(
         self,
         issue_type: str,
@@ -28,6 +37,7 @@ class Scanner:
         invalid_risk: str,
         invalid_reason: str
     ) -> list[ScanIssue]:
+
         issues = []
 
         for value in matches:
@@ -42,6 +52,102 @@ class Scanner:
 
             issue = ScanIssue(
                 type=issue_type,
+                value=value,
+                valid=is_valid,
+                risk=risk,
+                reason=reason
+            )
+
+            if self.policy is not None:
+                issue = self.policy.apply(issue)
+
+            issues.append(issue)
+
+        return issues
+
+    def _build_rg_issues(
+        self,
+        text: str,
+        matches: list[str],
+        valid_risk: str,
+        valid_reason: str,
+        invalid_risk: str,
+        invalid_reason: str
+    ) -> list[ScanIssue]:
+        issues = []
+
+        def local_context(full_text: str, value: str, window: int = 100) -> str:
+            idx = full_text.find(value)
+            if idx == -1:
+                return full_text[: window * 2]
+
+            start = max(0, idx - window)
+            end = min(len(full_text), idx + len(value) + window)
+            return full_text[start:end]
+
+        for value in matches:
+            ctx = local_context(text, value)
+            is_valid = is_valid_rg(value, context=ctx)
+
+            if is_valid:
+                risk = valid_risk
+                reason = valid_reason
+            else:
+                risk = invalid_risk
+                reason = invalid_reason
+
+            issue = ScanIssue(
+                type="RG",
+                value=value,
+                valid=is_valid,
+                risk=risk,
+                reason=reason
+            )
+
+            if self.policy is not None:
+                issue = self.policy.apply(issue)
+
+            issues.append(issue)
+
+        return issues
+
+    def _build_rg_issues(
+        self,
+        text: str,
+        matches: list[str],
+        valid_risk: str,
+        valid_reason: str,
+        invalid_risk: str,
+        invalid_reason: str
+    ) -> list[ScanIssue]:
+
+        issues = []
+
+        def local_context(full_text: str, value: str, window: int = 80) -> str:
+            idx = full_text.find(value)
+
+            if idx == -1:
+                return full_text[:160]
+
+            start = max(0, idx - window)
+            end = min(len(full_text), idx + len(value) + window)
+
+            return full_text[start:end]
+
+        for value in matches:
+            ctx = local_context(text, value)
+
+            is_valid = is_valid_rg(value, context=ctx)
+
+            if is_valid:
+                risk = valid_risk
+                reason = valid_reason
+            else:
+                risk = invalid_risk
+                reason = invalid_reason
+
+            issue = ScanIssue(
+                type="RG",
                 value=value,
                 valid=is_valid,
                 risk=risk,
@@ -140,14 +246,13 @@ class Scanner:
             )
 
             issues.extend(
-                self._build_issues(
-                    issue_type="RG",
-                    matches=rg_matches,
-                    validator=is_valid_rg,
-                    valid_risk="medium",
-                    valid_reason="RG encontrado no texto.",
-                    invalid_risk="low",
-                    invalid_reason="RG inválido."
+                            self._build_rg_issues(
+                                text=text,
+                                matches=rg_matches,
+                                valid_risk="medium",
+                                valid_reason="RG encontrado no texto.",
+                                invalid_risk="low",
+                                invalid_reason="RG inválido."
                 )
             )
 
@@ -187,7 +292,9 @@ class Scanner:
         grouped = {}
 
         for issue in issues:
-            key = normalize(issue.value)
+            norm = normalize(issue.value)
+            raw = (issue.value or "").strip()
+            key = (norm, raw)
             grouped.setdefault(key, []).append(issue)
 
         final = []
@@ -197,6 +304,16 @@ class Scanner:
             invalids = [x for x in group if not x.valid]
 
             if not valids:
+                invalid_phone = [x for x in invalids if x.type == "PHONE"]
+                invalid_rg = [x for x in invalids if x.type == "RG"]
+                invalid_others = [x for x in invalids if x.type not in ("PHONE", "RG")]
+
+                # se houver RG e PHONE inválidos sobre o mesmo número, prefere RG
+                if invalid_rg and invalid_phone:
+                    final.extend(invalid_rg)
+                    final.extend(invalid_others)
+                    continue
+
                 final.extend(invalids)
                 continue
 

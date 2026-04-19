@@ -9,9 +9,7 @@ from .rg_common import (
     has_strong_rg_context,
     is_repeated_sequence,
     is_obviously_invalid_rg,
-    detect_rg_state,
 )
-
 
 def normalize_outros_rg(rg: str) -> str:
     return re.sub(r"[^0-9Xx]", "", rg).upper()
@@ -45,33 +43,94 @@ def is_valid_outros_rg_format(rg: str) -> bool:
 
 def is_valid_outros_rg(rg: str, context: str = "") -> bool:
     clean = normalize_outros_rg(rg)
+    ctx = (context or "").lower()
 
     if not is_valid_outros_rg_format(clean):
-        return False
-
-    if is_obviously_invalid_rg(clean):
         return False
 
     if has_negative_context(context):
         return False
 
-    if not has_strong_rg_context(context):
+    # contexto forte local para OUTROS
+    has_generic_rg_context = (
+        "registro geral" in ctx
+        or "rg " in ctx
+        or "identidade" in ctx
+        or "documento de identidade" in ctx
+        or "carteira de identidade" in ctx
+        or "número de identidade" in ctx
+        or "numero de identidade" in ctx
+    )
+
+    if not has_generic_rg_context:
         return False
 
-    # fallback genérico: se houver indício claro de UF, deixa para os validadores estaduais
-    if detect_rg_state(clean, context=context):
+    # rejeita apenas quando houver marcador explícito de UF
+    if any(marker in ctx for marker in (
+        "rg rj",
+        "rg es",
+        "rg mg",
+        "rg sp",
+        "ssp/rj",
+        "ssp/es",
+        "ssp/mg",
+        "ssp/sp",
+        "detran/rj",
+        "sesp/es",
+    )):
+        return False
+
+    # aqui sim a heurística de "obviamente inválido"
+    # mas sem punir o caso forte "Registro Geral <numero>"
+    if "registro geral" not in ctx and is_obviously_invalid_rg(clean):
         return False
 
     return True
-
 
 def find_outros_rgs(text: str) -> List[str]:
     results = []
     seen = set()
 
+    # caminho dedicado para "Registro Geral"
+    registro_geral_pattern = r"(?i)\bRegistro\s+Geral[\s:\-]+([0-9]{7,9}[Xx]?)\b"
+
+    for match in re.finditer(registro_geral_pattern, text, flags=re.IGNORECASE):
+        candidate = match.group(1).strip()
+
+        start = max(0, match.start() - 100)
+        end = min(len(text), match.end() + 100)
+        ctx = text[start:end]
+        ctx_lower = ctx.lower()
+
+        if not is_valid_outros_rg_format(candidate):
+            continue
+
+        if has_negative_context(ctx):
+            continue
+
+        # não aceitar se houver marcador explícito de UF
+        if any(marker in ctx_lower for marker in (
+            "rg rj",
+            "rg es",
+            "rg mg",
+            "rg sp",
+            "ssp/rj",
+            "ssp/es",
+            "ssp/mg",
+            "ssp/sp",
+            "detran/rj",
+            "sesp/es",
+        )):
+            continue
+
+        key = normalize_rg(candidate)
+        if key not in seen:
+            seen.add(key)
+            results.append(candidate)
+
+    # padrões restantes
     patterns = (
         r"(?i)\bRG(?!\s*(?:RJ|ES|MG|SP)\b)[\s:\-]+([0-9]{7,9}[Xx]?)\b",
-        r"(?i)\bRegistro\s+Geral[\s:\-]+([0-9]{7,9}[Xx]?)\b",
         r"(?i)\bIdentidade(?!\s*(?:RJ|ES|MG|SP)\b)[\s:\-]+([0-9]{7,9}[Xx]?)\b",
         r"(?i)\bDocumento\s+de\s+identidade(?!\s*(?:RJ|ES|MG|SP)\b)[\s:\-]+([0-9]{7,9}[Xx]?)\b",
         r"(?i)\bCarteira\s+de\s+identidade(?!\s*(?:RJ|ES|MG|SP)\b)[\s:\-]+([0-9]{7,9}[Xx]?)\b",

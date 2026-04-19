@@ -4,18 +4,14 @@ from dpokitpy.models import ScanIssue
 class LGPDPolicyBR:
     def apply(self, issue: ScanIssue) -> ScanIssue:
         if not issue.valid:
-            issue.action = "ignore"
+            issue.action = "warn"
             return issue
 
-        if issue.type == "CPF":
+        if issue.type in ("CPF", "CNPJ", "RG", "PIS", "CNH"):
             issue.action = "block"
-        elif issue.type == "CNPJ":
-            issue.action = "block"
-        elif issue.type == "EMAIL":
-            issue.action = "warn"
-        elif issue.type == "PHONE":
+        elif issue.type in ("EMAIL", "PHONE"):
             issue.action = "warn"
         else:
-            issue.action = "ignore"
+            issue.action = "warn"
 
         return issue

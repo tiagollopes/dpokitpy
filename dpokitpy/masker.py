@@ -4,24 +4,22 @@ class Masker:
         masked_text = text
 
         for issue in issues:
-            if issue.valid and issue.type == "CPF":
+            if issue.type == "CPF":
                 masked_value = self._mask_cpf(issue.value)
                 masked_text = masked_text.replace(issue.value, masked_value)
 
-            elif issue.valid and issue.type == "EMAIL":
+            elif issue.type == "EMAIL":
                 masked_value = self._mask_email(issue.value)
                 masked_text = masked_text.replace(issue.value, masked_value)
 
-            elif issue.valid and issue.type == "PHONE":
+            elif issue.type == "PHONE":
                 masked_value = self._mask_phone(issue.value)
                 masked_text = masked_text.replace(issue.value, masked_value)
 
-            # NOVO BLOCO RG
-            elif issue.valid and issue.type == "RG":
+            elif issue.type == "RG":
                 masked_value = self._mask_rg(issue.value)
                 masked_text = masked_text.replace(issue.value, masked_value)
 
-        #return masked_text
         return masked_text.strip()
 
     def _mask_cpf(self, cpf: str) -> str:

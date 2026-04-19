@@ -1,5 +1,7 @@
 import json
 from dpokitpy import Guard
+from dpokitpy.validators.br.rg import find_rgs
+from dpokitpy.validators.br.rg_sp import is_valid_sp_rg_format
 
 guard = Guard()
 
@@ -7,6 +9,8 @@ guard = Guard()
 # TEXTO DE TESTE (COMPLETO)
 # ===============================
 texto = """
+12.345.678-X
+123.456.789-00
 CPF: 529.982.247-25
 Email: teste@gmail.com
 Telefone: (11) 91234-5678
@@ -68,3 +72,9 @@ print(guard.mask(texto))
 print("\n=== hash ===")
 print(f"Hash Original:  {guard.hash_original(texto)}")
 print(f"Hash Mascarado: {guard.hash_masked(texto)}")
+print("RGs encontrados:")
+print(find_rgs(texto))
+print("=== is_safe ===")
+print(guard.is_safe(texto))
+print("FORMATO 123456789:", is_valid_sp_rg_format("123456789"))
+print("FORMATO 12345678X:", is_valid_sp_rg_format("12345678X"))

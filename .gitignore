@@ -40,3 +40,5 @@ benchmark_results.json
 # Arquivos locais diversos
 *.sqlite3
 
+.gradio/
+
