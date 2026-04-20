@@ -2,15 +2,15 @@
     "total_tests": 11,
     "total_samples": 31000,
     "total_errors": 0,
-    "total_found_issues": 7620,
-    "total_time_sec": 9.2456,
+    "total_found_issues": 7609,
+    "total_time_sec": 9.4786,
     "global_precision": "100.0%",
     "results": [
         {
             "type": "CPF",
             "iterations": 5000,
-            "total_time_sec": 1.252,
-            "avg_time_ms": 0.250409,
+            "total_time_sec": 1.3081,
+            "avg_time_ms": 0.261615,
             "found_issues": 0,
             "errors_count": 0,
             "precision": "100.0%"
@@ -18,8 +18,8 @@
         {
             "type": "CNPJ",
             "iterations": 5000,
-            "total_time_sec": 1.18,
-            "avg_time_ms": 0.236,
+            "total_time_sec": 1.1692,
+            "avg_time_ms": 0.233835,
             "found_issues": 0,
             "errors_count": 0,
             "precision": "100.0%"
@@ -27,8 +27,8 @@
         {
             "type": "EMAIL",
             "iterations": 5000,
-            "total_time_sec": 1.0541,
-            "avg_time_ms": 0.210819,
+            "total_time_sec": 1.1036,
+            "avg_time_ms": 0.220721,
             "found_issues": 0,
             "errors_count": 0,
             "precision": "100.0%"
@@ -36,8 +36,8 @@
         {
             "type": "PHONE",
             "iterations": 2000,
-            "total_time_sec": 0.4862,
-            "avg_time_ms": 0.243111,
+            "total_time_sec": 0.5227,
+            "avg_time_ms": 0.261343,
             "found_issues": 0,
             "errors_count": 0,
             "precision": "100.0%"
@@ -45,63 +45,63 @@
         {
             "type": "PIS",
             "iterations": 2000,
-            "total_time_sec": 0.5034,
-            "avg_time_ms": 0.251689,
-            "found_issues": 1014,
+            "total_time_sec": 0.5212,
+            "avg_time_ms": 0.260616,
+            "found_issues": 1011,
             "errors_count": 0,
             "precision": "100.0%"
         },
         {
             "type": "CNH",
             "iterations": 2000,
-            "total_time_sec": 0.5508,
-            "avg_time_ms": 0.275397,
-            "found_issues": 659,
+            "total_time_sec": 0.5725,
+            "avg_time_ms": 0.286234,
+            "found_issues": 693,
             "errors_count": 0,
             "precision": "100.0%"
         },
         {
             "type": "RG_RJ",
             "iterations": 2000,
-            "total_time_sec": 0.6767,
-            "avg_time_ms": 0.338347,
-            "found_issues": 1259,
+            "total_time_sec": 0.6968,
+            "avg_time_ms": 0.348393,
+            "found_issues": 1233,
             "errors_count": 0,
             "precision": "100.0%"
         },
         {
             "type": "RG_ES",
             "iterations": 2000,
-            "total_time_sec": 0.6848,
-            "avg_time_ms": 0.342417,
-            "found_issues": 1246,
+            "total_time_sec": 0.6954,
+            "avg_time_ms": 0.347679,
+            "found_issues": 1220,
             "errors_count": 0,
             "precision": "100.0%"
         },
         {
             "type": "RG_MG",
             "iterations": 2000,
-            "total_time_sec": 0.707,
-            "avg_time_ms": 0.353502,
-            "found_issues": 1223,
+            "total_time_sec": 0.7238,
+            "avg_time_ms": 0.361902,
+            "found_issues": 1210,
             "errors_count": 0,
             "precision": "100.0%"
         },
         {
             "type": "RG_SP",
             "iterations": 2000,
-            "total_time_sec": 0.5696,
-            "avg_time_ms": 0.284778,
-            "found_issues": 1236,
+            "total_time_sec": 0.6195,
+            "avg_time_ms": 0.309733,
+            "found_issues": 1254,
             "errors_count": 0,
             "precision": "100.0%"
         },
         {
             "type": "RG_OUTROS",
             "iterations": 2000,
-            "total_time_sec": 0.703,
-            "avg_time_ms": 0.351503,
-            "found_issues": 983,
+            "total_time_sec": 0.6991,
+            "avg_time_ms": 0.349536,
+            "found_issues": 988,
             "errors_count": 0,
             "precision": "100.0%"
         }

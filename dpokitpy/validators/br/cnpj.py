@@ -37,24 +37,25 @@ def is_valid_cnpj(cnpj: str) -> bool:
 
     return True
 
+import re
+
 def find_cnpjs(text: str) -> list[str]:
-    """
-    Busca CNPJs (Numéricos e Alfanuméricos) em múltiplos formatos.
-    """
     matches = []
 
-    # 1. Padrão Clássico/Alfanumérico com Máscara: XX.XXX.XXX/XXXX-XX
-    # Aceita letras e números nos 8 primeiros dígitos
-    pattern_masked = r"[A-Z0-9]{2}\.[A-Z0-9]{3}\.[A-Z0-9]{3}/\d{4}-\d{2}"
-    matches.extend(re.findall(pattern_masked, text, flags=re.IGNORECASE))
+    patterns = [
+        # mascarado completo: 12 base alfanumérica + 2 DVs numéricos
+        r"(?<![A-Z0-9])[A-Z0-9]{2}\.[A-Z0-9]{3}\.[A-Z0-9]{3}/[A-Z0-9]{4}-\d{2}(?![A-Z0-9])",
 
-    # 2. Apenas Letras/Números colados (14 caracteres)
-    # Evita capturar palavras comuns exigindo que termine em 2 números (DV)
-    pattern_raw = r"(?<![A-Z0-9])[A-Z0-9]{12}\d{2}(?![A-Z0-9])"
-    matches.extend(re.findall(pattern_raw, text, flags=re.IGNORECASE))
+        # sem os pontos, mas com / e -
+        r"(?<![A-Z0-9])[A-Z0-9]{8}/[A-Z0-9]{4}-\d{2}(?![A-Z0-9])",
 
-    # 3. Formato com espaços ou barras sujas
-    pattern_dirty = r"[A-Z0-9]{8}/\d{4}-\d{2}"
-    matches.extend(re.findall(pattern_dirty, text, flags=re.IGNORECASE))
+        # colado
+        r"(?<![A-Z0-9])[A-Z0-9]{12}\d{2}(?![A-Z0-9])",
+    ]
+
+    upper_text = text.upper()
+
+    for pattern in patterns:
+        matches.extend(re.findall(pattern, upper_text, flags=re.IGNORECASE))
 
     return list(dict.fromkeys(matches))

@@ -88,24 +88,29 @@ def find_phones(text: str) -> list[str]:
 
     # Telefones com máscara / espaços / hífen / DDI repetido
     pattern_wide = (
-        r"(?:\+?\s*55[\s\-]*){0,2}"
-        r"(?:\(?\d{1,3}\)?[\s\-]*)?"
-        r"(?:9[\s\-]*)?"
-        r"\d{3,5}[\s\-]?\d{4}"
+        r"(?:\+?55[ \t\-]*){0,2}"
+        r"(?:\(?\d{2,3}\)?[ \t\-]*)?"
+        r"(?:9[ \t\-]*)?"
+        r"\d{4,5}[ \t\-]?\d{4}"
     )
-
     # Números puros grandes
-    pattern_raw = r"(?<!\d)\d{10,16}(?!\d)"
+    #pattern_raw = r"(?<!\d)\d{10,16}(?!\d)"
+    pattern_raw = r"(?<!\d)\d{10,11}(?!\d)"
 
     for pattern in (pattern_wide, pattern_raw):
         for match in re.finditer(pattern, text):
             raw = match.group(0).strip()
+            if "\n" in raw or "\r" in raw:
+                continue
             raw = re.sub(r"[^\d]+$", "", raw)
 
             if _has_negative_context(text, match.start()):
                 continue
 
-            if sum(c.isdigit() for c in raw) >= 8:
+            normalized = _normalize_phone_digits(raw)
+            digits_count = len(normalized)
+
+            if 10 <= digits_count <= 11:
                 matches.append(raw)
 
     # Remove duplicados por número normalizado

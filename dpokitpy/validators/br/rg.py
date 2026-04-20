@@ -173,6 +173,19 @@ def find_rgs(text: str) -> List[str]:
     add(find_sp_rgs(text))
     add(find_outros_rgs(text))
 
+    # fallback específico para casos como:
+    # "RG SP formato alternativo 123456789"
+    for match in re.finditer(
+        r"(?i)\bRG\s+SP\b.{0,50}?([0-9]{9}|[0-9]{8}[Xx])\b",
+        text,
+        flags=re.IGNORECASE | re.DOTALL,
+    ):
+        candidate = match.group(1).strip()
+
+        if candidate not in seen_exact:
+            seen_exact.add(candidate)
+            results.append(candidate)
+
     return results
 
 def find_es_rgs(text: str) -> List[str]:
@@ -244,6 +257,7 @@ def find_sp_rgs(text: str) -> List[str]:
         r"(?i)\bRG\s+SP\s+([0-9]{2}\.[0-9]{3}\.[0-9]{3}-[0-9Xx])\b",
         r"(?i)\bSSP\/SP[\s:\-]+([0-9]{2}\.[0-9]{3}\.[0-9]{3}-[0-9Xx])\b",
         r"(?i)\bRG\s+SP\s+([0-9]{8}[0-9Xx])\b",
+        r"(?i)\bRG\s+SP\b.{0,40}?([0-9]{8}[0-9Xx])\b",
         r"(?i)\bSSP\/SP[\s:\-]+([0-9]{8}[0-9Xx])\b",
         r"(?i)\bRG[\s:\-]+([0-9]{8}[0-9Xx])\b",
         r"(?i)\bIdentidade[\s:\-]+([0-9]{8}[0-9Xx])\b",
@@ -267,8 +281,8 @@ def find_sp_rgs(text: str) -> List[str]:
 
             clean = normalize_sp_rg(candidate)
 
-            if re.fullmatch(r"\d{8}[0-9X]", clean):
-                key = candidate
+            if is_valid_sp_rg_format(candidate) and not has_sp_negative_context(ctx):
+                key = clean
                 if key not in seen:
                     seen.add(key)
                     results.append(candidate)

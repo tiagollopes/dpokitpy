@@ -76,6 +76,16 @@ O uso da biblioteca é seguro para:
 
 desde que o próprio ambiente de execução também siga boas práticas de segurança.
 
+## Demo online
+
+Está disponível uma demonstração pública do `dpokitpy` no Hugging Face Spaces:
+
+**Hugging Face Space:** https://huggingface.co/spaces/tiagollopes/dpokitpy-demo
+
+A demo foi criada para facilitar testes públicos e validação rápida da interface, sem necessidade de instalar o projeto localmente.
+
+> Observação: o repositório principal do projeto continua sendo este. A demo no Hugging Face é apenas uma interface de uso e teste.
+
 ## Tipos suportados
 
 Atualmente o `dpokitpy` suporta:

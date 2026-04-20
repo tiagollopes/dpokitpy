@@ -8,16 +8,6 @@ from dpokitpy.validators.br.cnh import find_cnhs, is_valid_cnh
 from dpokitpy.validators.br.rg import find_rgs, is_valid_rg
 from dpokitpy.policies.br.lgpd import LGPDPolicyBR
 
-
-class Scanner:
-    def __init__(self, country: str = "BR"):
-        self.country = country.upper()
-
-        if self.country == "BR":
-            self.policy = LGPDPolicyBR()
-        else:
-            self.policy = None
-
 class Scanner:
     def __init__(self, country: str = "BR"):
         self.country = country.upper()
@@ -110,18 +100,6 @@ class Scanner:
             issues.append(issue)
 
         return issues
-
-    def _build_rg_issues(
-        self,
-        text: str,
-        matches: list[str],
-        valid_risk: str,
-        valid_reason: str,
-        invalid_risk: str,
-        invalid_reason: str
-    ) -> list[ScanIssue]:
-
-        issues = []
 
         def local_context(full_text: str, value: str, window: int = 80) -> str:
             idx = full_text.find(value)
@@ -304,12 +282,39 @@ class Scanner:
             invalids = [x for x in group if not x.valid]
 
             if not valids:
-                invalid_phone = [x for x in invalids if x.type == "PHONE"]
+                invalid_cnpj = [x for x in invalids if x.type == "CNPJ"]
+                invalid_cpf = [x for x in invalids if x.type == "CPF"]
+                invalid_pis = [x for x in invalids if x.type == "PIS"]
+                invalid_cnh = [x for x in invalids if x.type == "CNH"]
                 invalid_rg = [x for x in invalids if x.type == "RG"]
-                invalid_others = [x for x in invalids if x.type not in ("PHONE", "RG")]
+                invalid_phone = [x for x in invalids if x.type == "PHONE"]
+                invalid_others = [
+                    x for x in invalids
+                    if x.type not in ("CNPJ", "CPF", "PIS", "CNH", "RG", "PHONE")
+                ]
 
-                # se houver RG e PHONE inválidos sobre o mesmo número, prefere RG
-                if invalid_rg and invalid_phone:
+                # documento sempre vence telefone
+                if invalid_cnpj:
+                    final.extend(invalid_cnpj)
+                    final.extend(invalid_others)
+                    continue
+
+                if invalid_cpf:
+                    final.extend(invalid_cpf)
+                    final.extend(invalid_others)
+                    continue
+
+                if invalid_pis:
+                    final.extend(invalid_pis)
+                    final.extend(invalid_others)
+                    continue
+
+                if invalid_cnh:
+                    final.extend(invalid_cnh)
+                    final.extend(invalid_others)
+                    continue
+
+                if invalid_rg:
                     final.extend(invalid_rg)
                     final.extend(invalid_others)
                     continue

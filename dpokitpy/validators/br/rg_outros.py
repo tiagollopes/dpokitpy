@@ -108,7 +108,6 @@ def find_outros_rgs(text: str) -> List[str]:
         if has_negative_context(ctx):
             continue
 
-        # não aceitar se houver marcador explícito de UF
         if any(marker in ctx_lower for marker in (
             "rg rj",
             "rg es",
@@ -128,7 +127,6 @@ def find_outros_rgs(text: str) -> List[str]:
             seen.add(key)
             results.append(candidate)
 
-    # padrões restantes
     patterns = (
         r"(?i)\bRG(?!\s*(?:RJ|ES|MG|SP)\b)[\s:\-]+([0-9]{7,9}[Xx]?)\b",
         r"(?i)\bIdentidade(?!\s*(?:RJ|ES|MG|SP)\b)[\s:\-]+([0-9]{7,9}[Xx]?)\b",
@@ -151,5 +149,47 @@ def find_outros_rgs(text: str) -> List[str]:
                     seen.add(key)
                     results.append(candidate)
 
-    return results
+    # fallback para RG cru solto em contexto documental
+    fallback_pattern = r"\b([0-9]{8}[Xx]|[0-9]{9})\b"
 
+    for match in re.finditer(fallback_pattern, text):
+        candidate = match.group(1).strip()
+
+        start = max(0, match.start() - 60)
+        end = min(len(text), match.end() + 60)
+        ctx = text[start:end]
+        ctx_lower = ctx.lower()
+
+        if not any(word in ctx_lower for word in (
+            "rg",
+            "identidade",
+            "documento",
+            "registro geral",
+            "carteira de identidade",
+        )):
+            continue
+
+        if has_negative_context(ctx):
+            continue
+
+        if any(marker in ctx_lower for marker in (
+            "rg rj",
+            "rg es",
+            "rg mg",
+           # "rg sp",
+            "ssp/rj",
+            "ssp/es",
+            "ssp/mg",
+            "ssp/sp",
+            "detran/rj",
+            "sesp/es",
+        )):
+            continue
+
+        if is_valid_outros_rg(candidate, context=ctx):
+            key = normalize_rg(candidate)
+            if key not in seen:
+                seen.add(key)
+                results.append(candidate)
+
+    return results

@@ -15,29 +15,32 @@ def run_benchmark(iterations=1000):
     print(f"--- Iniciando Stress Test de TELEFONE ({iterations} amostras) ---")
 
     samples = []
+
     for _ in range(iterations):
         choice = fake.random_element(elements=(1, 2, 3, 4, 5, 6))
 
-        if choice == 1: # Celular padrão: (00) 00000-0000
-            samples.append((fake.cellphone_number(), True, "Celular com Máscara"))
+        ddd = str(fake.random_int(min=11, max=99))
 
-        elif choice == 2: # Fixo padrão: (00) 0000-0000
-            samples.append((fake.phone_number(), True, "Fixo com Máscara"))
+        celular = ddd + "9" + str(fake.random_int(min=1000, max=9999)) + str(fake.random_int(min=1000, max=9999))
+        fixo    = ddd + str(fake.random_int(min=2000, max=5999)) + str(fake.random_int(min=1000, max=9999))
 
-        elif choice == 3: # Apenas números (com DDD): 13991234567
-            num = "".join(filter(str.isdigit, fake.cellphone_number()))
-            samples.append((f"Ligar para {num}", True, "Apenas Números"))
+        if choice == 1:
+            samples.append((f"Telefone: ({ddd}) {celular[2:7]}-{celular[7:]}", True, "Celular máscara"))
 
-        elif choice == 4: # Com DDI +55: +55 13 99123-4567
-            num = fake.cellphone_number()
-            samples.append((f"WhatsApp +55 {num}", True, "Com DDI +55"))
+        elif choice == 2:
+            samples.append((f"Telefone: ({ddd}) {fixo[2:6]}-{fixo[6:]}", True, "Fixo máscara"))
 
-        elif choice == 5: # Sem parênteses: 13 99123-4567
-            num = fake.cellphone_number().replace("(", "").replace(")", "")
-            samples.append((f"Tel {num}", True, "Sem Parênteses"))
+        elif choice == 3:
+            samples.append((f"Ligar para {celular}", True, "Celular bruto"))
 
-        else: # Falso Positivo: Números aleatórios que não são telefone
-            samples.append((f"Protocolo {fake.random_number(digits=11)}", False, "Número Aleatório"))
+        elif choice == 4:
+            samples.append((f"WhatsApp +55 ({ddd}) {celular[2:7]}-{celular[7:]}", True, "Com DDI"))
+
+        elif choice == 5:
+            samples.append((f"Tel {ddd} {celular[2:7]}-{celular[7:]}", True, "Sem parênteses"))
+
+        else:
+            samples.append((f"Protocolo {fake.random_number(digits=11)}", False, "Falso positivo"))
 
     errors = []
     start_time = time.perf_counter()
